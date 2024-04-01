@@ -19,14 +19,21 @@ const BillingAPI = () => {
 
   async function fetchContent() {
     setResponseData("loading...");
-    const res = await fetch("/api/apps/discount");
+    const postOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ functionId }),
+    };
+    const res = await fetch("/api/apps/discount", postOptions);
     const data = await res.json();
     if (data.error) {
       setResponseData(data.error);
-    } else if (data.confirmationUrl) {
-      setResponseData("Redirecting");
-      const { confirmationUrl } = data;
-      open(confirmationUrl, "_top");
+    } else if (data.automaticAppDiscount) {
+      const { automaticAppDiscount } = data;
+      setResponseData(automaticAppDiscount.discountId);
     }
   }
 

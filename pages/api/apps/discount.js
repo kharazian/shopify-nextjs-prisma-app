@@ -13,15 +13,21 @@ const handler = async (req, res) => {
   });
   const returnUrl = `${process.env.SHOPIFY_APP_URL}/api/auth?shop=${req.user_shop}`;
 
-  const planName = "$10.25 plan";
-  const planPrice = 10.25; //Always a decimal
-
+  const { functionId } = req.body;
   const response = await client.request(
     `mutation {
       discountAutomaticAppCreate(automaticAppDiscount: {
         title: "Volume discount",
-        functionId: "49fc20d6-4d37-4b73-b340-5db4004d1694",
-        startsAt: "2022-06-22T00:00:00"
+        functionId: "${functionId}",
+        startsAt: "2022-06-22T00:00:00",
+        metafields: [
+          {
+            namespace: "$app:volume-discount"
+            key: "function-configuration"
+            value: "{ \\"quantity\\": 3, \\"percentage\\": 50.0 }"
+            type: "json"
+          }
+        ],
       }) {
          automaticAppDiscount {
           discountId
@@ -33,6 +39,7 @@ const handler = async (req, res) => {
       }
     }`
   );
+
 
   if (response.data.discountAutomaticAppCreate.userErrors.length > 0) {
     console.log(
