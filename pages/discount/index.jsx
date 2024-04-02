@@ -13,11 +13,11 @@ import { useEffect, useState } from "react";
 
 const BillingAPI = () => {
   const router = useRouter();
-  const { functionId } = router.query;
-  console.log(functionId);
+  const { functionId, id } = router.query;
+  console.log(router.query);
   const [responseData, setResponseData] = useState("");
 
-  async function fetchContent() {
+  async function createDiscount() {
     setResponseData("loading...");
     const postOptions = {
       headers: {
@@ -27,7 +27,7 @@ const BillingAPI = () => {
       method: "POST",
       body: JSON.stringify({ functionId }),
     };
-    const res = await fetch("/api/apps/discount", postOptions);
+    const res = await fetch("/api/apps/discount/create", postOptions);
     const data = await res.json();
     if (data.error) {
       setResponseData(data.error);
@@ -35,6 +35,26 @@ const BillingAPI = () => {
       const { automaticAppDiscount } = data;
       setResponseData(automaticAppDiscount.discountId);
     }
+  }
+
+  async function updateDiscount() {
+    setResponseData("loading...");
+    const postOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ functionId, id }),
+    };
+    const res = await fetch("/api/apps/discount/update", postOptions);
+    const data = await res.json();
+    // if (data.error) {
+    //   setResponseData(data.error);
+    // } else if (data.automaticAppDiscount) {
+    //   const { automaticAppDiscount } = data;
+    //   setResponseData(automaticAppDiscount.discountId);
+    // }
   }
 
   return (
@@ -62,7 +82,7 @@ const BillingAPI = () => {
                 <Button
                   variant="primary"
                   onClick={() => {
-                    fetchContent();
+                    id ? updateDiscount() : createDiscount();
                   }}
                 >
                   Subscribe Merchant
