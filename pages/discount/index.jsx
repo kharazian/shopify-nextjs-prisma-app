@@ -17,6 +17,26 @@ const BillingAPI = () => {
   console.log(router.query);
   const [responseData, setResponseData] = useState("");
 
+  async function updateDiscount() {
+    setResponseData("loading...");
+    const postOptions = {
+      headers: {
+        Accept: "application/json",
+        "Content-Type": "application/json",
+      },
+      method: "POST",
+      body: JSON.stringify({ functionId, id }),
+    };
+    const res = await fetch("/api/apps/discount/get", postOptions);
+    const data = await res.json();
+    // if (data.error) {
+    //   setResponseData(data.error);
+    // } else if (data.automaticAppDiscount) {
+    //   const { automaticAppDiscount } = data;
+    //   setResponseData(automaticAppDiscount.discountId);
+    // }
+  }
+
   async function createDiscount() {
     setResponseData("loading...");
     const postOptions = {
