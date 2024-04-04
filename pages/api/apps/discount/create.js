@@ -24,7 +24,7 @@ const handler = async (req, res) => {
           {
             namespace: "$app:volume-discount"
             key: "function-configuration"
-            value: "{ \\"quantity\\": 3, \\"percentage\\": 50.0 }"
+            value: "{ \\"quantity\\": 30, \\"percentage\\": 50.0 }"
             type: "json"
           }
         ],

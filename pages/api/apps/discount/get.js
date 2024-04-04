@@ -61,7 +61,7 @@ const handler = async (req, res) => {
       }
     }`
   );
-  console.log(discount.data.discountNode.configurationField.id);
+  console.log(discount);
   res.status(200).send(discount);
 
   return;
