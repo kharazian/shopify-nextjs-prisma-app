@@ -61,9 +61,8 @@ const handler = async (req, res) => {
       }
     }`
   );
-  console.log(discount);
-  res.status(200).send(discount);
 
+  res.status(200).send(discount.data);
   return;
 };
 
