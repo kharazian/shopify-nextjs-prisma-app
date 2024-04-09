@@ -20,7 +20,7 @@ const handler = async (req, res) => {
       discountAutomaticAppUpdate(
       id: "${data.id}",
       automaticAppDiscount: {
-        title: "Volume discount",
+        title: "${data.discount.title}",
         functionId: "${data.functionId}",
         startsAt: "2022-06-22T00:00:00",
         metafields: [
@@ -31,16 +31,14 @@ const handler = async (req, res) => {
         ],
       },
       ) {
-         userErrors {
-          field
+        userErrors {
+          code
           message
-         }
+          field
+        }
       }
     }`    
   );
-
-  console.log(`value: "{ \\"quantity\\": ${data.field.quantity}, \\"percentage\\": ${data.field.percentage} }"`)
-  console.log(`value: "${JSON.stringify(data.field)}"`)
 
   if (response.data.discountAutomaticAppUpdate.userErrors.length > 0) {
     console.log(

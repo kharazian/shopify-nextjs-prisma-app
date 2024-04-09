@@ -1,27 +1,20 @@
   import {
-    BlockStack,
-    Button,
-    Card,
-    DataTable,
-    InlineStack,
-    Layout,
-    Page,
-    Text,
-    InputField,
-    Form,
-    TextField
-  } from "@shopify/polaris";
-  import { useRouter } from "next/router";
-  import { useEffect, useState } from "react";
+  Button,
+  Card,
+  Layout,
+  Page,
+  TextField
+} from "@shopify/polaris";
+import { useRouter } from "next/router";
+import { useEffect, useState } from "react";
 
   const Discount = () => {
     const router = useRouter();
     const { functionId, id } = router.query;
 
-    const [data, setData] = useState({})
+    const [data, setData] = useState({ functionId });
 
     useEffect(() => {
-      console.log(router.query);
       if(id) {
         getDiscount();
       }
@@ -72,6 +65,28 @@
       }
     }    
 
+    async function createDiscount() {
+      try {
+        const postOptions = {
+          headers: {
+            Accept: "application/json",
+            "Content-Type": "application/json",
+          },
+          method: "POST",
+          body: JSON.stringify(data),
+        };
+        const res = await fetch("/api/apps/discount/create", postOptions);
+        const response = await res.json();
+        if(response.discountNode) {
+          const data = response.discountNode;
+          data.field = JSON.parse(data.configurationField.value);
+          setData(data || {});
+        }
+      } catch (error) {
+        console.error("Error fetching discount:", error);
+      }
+    }    
+
     const handleDataChange = (state, fieldPath, value) => {
       const [topLevelField, ...nestedFields] = fieldPath.split(".");
       if (nestedFields.length === 0) {
@@ -89,7 +104,11 @@
 
     const handleSubmit = (event) => {
       event.preventDefault();
-      updateDiscount();
+      if(id) {
+        updateDiscount();
+      } else {
+        createDiscount();
+      }
     };
 
     return (

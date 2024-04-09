@@ -13,18 +13,19 @@ const handler = async (req, res) => {
   });
   const returnUrl = `${process.env.SHOPIFY_APP_URL}/api/auth?shop=${req.user_shop}`;
 
-  const { functionId } = req.body;
+  const data = req.body;
+  console.log(data);
   const response = await client.request(
     `mutation {
       discountAutomaticAppCreate(automaticAppDiscount: {
-        title: "Volume discount",
-        functionId: "${functionId}",
+        title: "${data.discount.title}",
+        functionId: "${data.functionId}",
         startsAt: "2022-06-22T00:00:00",
         metafields: [
           {
             namespace: "$app:volume-discount"
             key: "function-configuration"
-            value: "{ \\"quantity\\": 30, \\"percentage\\": 50.0 }"
+            value: "{ \\"quantity\\": ${data.field.quantity}, \\"percentage\\": ${data.field.percentage} }"
             type: "json"
           }
         ],
@@ -33,9 +34,10 @@ const handler = async (req, res) => {
           discountId
          }
          userErrors {
-          field
+          code
           message
-         }
+          field
+        }
       }
     }`
   );
