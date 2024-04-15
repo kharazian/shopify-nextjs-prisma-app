@@ -13,6 +13,26 @@ import { useEffect, useState } from "react";
     const { functionId, id } = router.query;
 
     const [data, setData] = useState({ functionId });
+    const [initialQuery, setInitialQuery] = useState("");
+
+    async function openResourcePicker(initQuery) {
+      const selected = await window?.shopify?.resourcePicker({
+        type: "product",
+        query: initQuery,
+        filter: {
+          hidden: false,
+          variants: true,
+        },
+        action: "select",
+        multiple: false,
+      });
+      if(selected) {
+        setInitialQuery("");
+        if(selected.length) {
+          console.log(selected);
+        }
+      }
+    }
 
     useEffect(() => {
       if(id) {
@@ -123,7 +143,7 @@ import { useEffect, useState } from "react";
           <Layout.Section>
             <Card title="Input Fields">
               <form onSubmit={handleSubmit}>
-              <TextField
+                <TextField
                   label="Title"
                   value={data?.discount?.title || ""}
                   onChange={(newValue) => handleChange('discount.title', newValue)}
@@ -140,7 +160,27 @@ import { useEffect, useState } from "react";
                   value={data?.field?.percentage || ""}
                   onChange={(newValue) => handleChange('field.percentage', newValue)}
                   type="number"
-                />                    
+                />
+                <TextField
+                  label="Product"
+                  value={initialQuery}
+                  onChange={(value) => {
+                    setInitialQuery(value);
+                    openResourcePicker(value);
+                  }}
+                  connectedRight={
+                    <>
+                      <Button
+                        variant="primary"
+                        onClick={() => {
+                          openResourcePicker(initialQuery);
+                        }}
+                      >
+                        Search
+                      </Button>
+                    </>
+                  }
+                />
                 <Button submit>Submit</Button>
               </form>
             </Card>
